@@ -4,6 +4,10 @@
 
 一个用于测试 GitHub 图片/文件托管与 SSH push/pull 链路的仓库。
 
+## 在线预览
+
+GitHub Pages 启用后访问：<https://gehlelwira-wq.github.io/image/>
+
 ## 内容
 
 - [`images/hello-dsh.svg`](images/hello-dsh.svg) — 由 DSH 推送的示例 SVG
