@@ -1,0 +1,45 @@
+name: validate-images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate SVG files
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -d images ]; then
+            echo "::error::images/ directory is missing"
+            exit 1
+          fi
+          mapfile -t files < <(find images -type f -name '*.svg' | sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::No SVG files found in images/"
+            exit 1
+          fi
+          python3 - "${files[@]}" <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+          for path in sys.argv[1:]:
+              ET.parse(path)
+              print(f"OK {path}")
+          PY
+
+      - name: Check README and LICENSE
+        shell: bash
+        run: |
+          test -s README.md
+          test -s LICENSE
+          echo "README.md and LICENSE OK"
